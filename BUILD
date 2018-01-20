@@ -23,6 +23,7 @@ load(
     "crypto_sources",
     "crypto_sources_linux_x86_64",
     "crypto_sources_mac_x86_64",
+    "crypto_sources_linux_aarch64",
     "fips_fragments",
     "ssl_headers",
     "ssl_internal_headers",
@@ -82,12 +83,14 @@ boringssl_copts = select({
         "-DWIN32_LEAN_AND_MEAN",
         "-DOPENSSL_NO_ASM",
     ],
+    ":linux_aarch64": posix_copts,
     "//conditions:default": ["-DOPENSSL_NO_ASM"],
 })
 
 crypto_sources_asm = select({
     ":linux_x86_64": crypto_sources_linux_x86_64,
     ":mac_x86_64": crypto_sources_mac_x86_64,
+    ":linux_aarch64": crypto_sources_linux_aarch64,
     "//conditions:default": [],
 })
 
@@ -102,6 +105,9 @@ posix_copts_c11 = [
 boringssl_copts_c11 = boringssl_copts + select({
     ":linux_x86_64": posix_copts_c11,
     ":mac_x86_64": posix_copts_c11,
+    ":linux_aarch64": posix_copts_c11 + [
+        "-std=gnu11",
+    ],
     "//conditions:default": [],
 })
 
@@ -114,6 +120,7 @@ posix_copts_cxx = [
 boringssl_copts_cxx = boringssl_copts + select({
     ":linux_x86_64": posix_copts_cxx,
     ":mac_x86_64": posix_copts_cxx,
+    ":linux_aarch64": posix_copts_cxx,
     "//conditions:default": [],
 })
 
@@ -128,6 +135,7 @@ cc_library(
         # Android supports pthreads, but does not provide a libpthread
         # to link against.
         ":android": [],
+        ":linux_aarch64": [],
         "//conditions:default": ["-lpthread"],
     }),
     visibility = ["//visibility:public"],
