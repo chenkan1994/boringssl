@@ -52,6 +52,11 @@ config_setting(
     values = {"crosstool_top": "//external:android/crosstool"}
 )
 
+config_setting(
+    name = "linux_aarch64",
+    values = {"cpu": "aarch64"}
+)
+
 posix_copts = [
     # Assembler option --noexecstack adds .note.GNU-stack to each object to
     # ensure that binaries can be built with non-executable stack.
